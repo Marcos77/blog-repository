@@ -1,0 +1,88 @@
+// BLOG
+
+create sequence blogdb.blog_id_seq
+ INCREMENT 1 
+ MINVALUE 1 
+ MAXVALUE 9223372036854775807 
+ START 1 CACHE 1; 
+
+CREATE TABLE blogdb.blog (
+	id_blog int8 NOT null default nextval('blogdb.blog_id_seq'),
+	owner varchar(20) NOT NULL,
+	"name" varchar(50) NOT NULL,
+	CONSTRAINT blog_pkey PRIMARY KEY (id_blog)
+)
+WITH (
+	OIDS=FALSE
+);
+ 
+
+// CATEGORY
+
+create sequence blogdb.cat_id_seq
+ INCREMENT 1 
+ MINVALUE 1 
+ MAXVALUE 9223372036854775807 
+ START 1 CACHE 1; 
+
+
+CREATE TABLE blogdb.category (
+id_cat int8 NOT null default nextval('blogdb.cat_id_seq'),
+id_blog int8 NOT NULL REFERENCES blogdb.blog,
+"name" varchar(50) NOT NULL,
+CONSTRAINT cat_pkey PRIMARY KEY(id_cat)
+)
+WITH (
+	OIDS=FALSE
+);
+
+
+
+
+// POST
+
+
+create sequence blogdb.post_id_seq
+ INCREMENT 1 
+ MINVALUE 1 
+ MAXVALUE 9223372036854775807 
+ START 1 CACHE 1; 
+
+
+CREATE TABLE blogdb.post (
+	id_post int8 NOT NULL DEFAULT nextval('blogdb.post_id_seq'),
+	id_cat int8 NOT NULL,
+	title varchar(100) NOT NULL,
+	text varchar(200) NOT NULL,
+    file               BYTEA null,
+	CONSTRAINT post_pkey PRIMARY KEY (id_post),
+	CONSTRAINT post_id_cat_fkey FOREIGN KEY (id_cat) REFERENCES blogdb.category(id_cat)
+)
+WITH (
+	OIDS=FALSE
+);
+
+
+
+// COMMEMTS
+
+create sequence blogdb.com_id_seq
+ INCREMENT 1 
+ MINVALUE 1 
+ MAXVALUE 9223372036854775807 
+ START 1 CACHE 1; 
+
+
+CREATE TABLE blogdb.comment (
+	id_com int8 NOT NULL DEFAULT nextval('blogdb.com_id_seq'),
+	id_post int8 NOT NULL,
+	text varchar(200) NOT NULL,
+	CONSTRAINT com_pkey PRIMARY KEY (id_com),
+	CONSTRAINT com_id_post_fkey FOREIGN KEY (id_post) REFERENCES blogdb.post(id_post)
+)
+WITH (
+	OIDS=FALSE
+);
+
+
+GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO postgres
